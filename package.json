@@ -2,14 +2,9 @@
   "name": "smartflow-workspace",
   "version": "1.0.0",
   "description": "SmartFlow — Intelligent Traffic Management & Peak-Hour Simulation Platform",
-  "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "build": "npm --prefix client run build",
-    "vercel-build": "npm --prefix client run build",
+    "build": "cd client && npm run build",
+    "vercel-build": "cd client && npm run build",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "build:server": "cd server && npm run build",
