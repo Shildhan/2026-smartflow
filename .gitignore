@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+*/node_modules/
+server/node_modules/
+client/node_modules/
+
+# Production build artifacts
+dist/
+*/dist/
+build/
+client/dist/
+server/dist/
+
+# Environment and sensitive keys
+.env
+.env.local
+.env.*.local
+server/.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS and Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary files
+scratch/
+scratch_*.js
+.system_generated/
+bin/
+mingit.zip
