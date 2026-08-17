@@ -25,7 +25,34 @@ export const SettingsPage: React.FC = () => {
   const [greenshieldsSensitivity, setGreenshieldsSensitivity] = useState(1.2);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  const getSettingsKey = () => `smartflow_settings_${user?.id || user?.email || 'default'}`;
+
+  // Load user settings on mount or when user switches
+  React.useEffect(() => {
+    const key = getSettingsKey();
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.modThreshold) setModThreshold(parsed.modThreshold);
+        if (parsed.heavyThreshold) setHeavyThreshold(parsed.heavyThreshold);
+        if (parsed.severeThreshold) setSevereThreshold(parsed.severeThreshold);
+        if (parsed.greenshieldsSensitivity) setGreenshieldsSensitivity(parsed.greenshieldsSensitivity);
+      } catch {}
+    }
+  }, [user?.id, user?.email]);
+
   const handleSave = () => {
+    const key = getSettingsKey();
+    const settingsPayload = {
+      userId: user?.id,
+      modThreshold,
+      heavyThreshold,
+      severeThreshold,
+      greenshieldsSensitivity,
+      savedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(key, JSON.stringify(settingsPayload));
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
   };

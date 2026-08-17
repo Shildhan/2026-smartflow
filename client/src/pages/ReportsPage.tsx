@@ -16,9 +16,11 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useTraffic } from '../context/TrafficContext';
 import { useSimulation } from '../context/SimulationContext';
+import { useAuth } from '../context/AuthContext';
 import { Badge } from '../components/common/Badge';
 
 export const ReportsPage: React.FC = () => {
+  const { user } = useAuth();
   const { peakHour, selectedDate, roads, zoneData, giniCoefficient, recommendations } = useTraffic();
   const { result } = useSimulation();
   const reportRef = useRef<HTMLDivElement>(null);
@@ -262,13 +264,20 @@ export const ReportsPage: React.FC = () => {
         <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-400">
           <div>
             <p className="font-semibold text-slate-200">
-              SmartFlow Municipal Intelligent Mobility Command
+              Authorized Sign-off: {user?.name || 'Dr. Rajesh Sharma (IAS)'}
             </p>
-            <p className="text-[11px]">System Certified for Municipal Intelligent Mobility</p>
+            <p className="text-[11px] text-cyan-400 font-mono">
+              {user?.role || 'Planning Authority'} &bull; {user?.agency || 'Nagpur Municipal Corporation (NMC) & NIT'}
+            </p>
+            <p className="text-[10px] text-slate-500 font-mono mt-0.5">
+              Authority ID: {user?.id || 'usr-1'} &bull; {user?.email || 'commissioner@nmcnagpur.gov.in'}
+            </p>
           </div>
           <div className="text-right">
-            <p className="font-mono text-[11px]">Audit Hash: SHA256-SMARTFLOW-98B2</p>
-            <p className="text-[11px] text-emerald-400 font-semibold">Status: Approved for Policy Implementation</p>
+            <p className="font-mono text-[11px]">Audit Hash: SHA256-SMARTFLOW-{user?.id || '98B2'}</p>
+            <p className="text-[11px] text-emerald-400 font-semibold flex items-center justify-end gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved for Policy Implementation
+            </p>
           </div>
         </div>
       </div>

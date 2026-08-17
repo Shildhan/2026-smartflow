@@ -5,6 +5,7 @@ import {
   TrafficStrategy,
 } from '../types';
 import { api } from '../services/api';
+import { useAuth } from './AuthContext';
 
 export interface ISimulationHistoryItem {
   simulationId: string;
@@ -20,10 +21,12 @@ export interface ISimulationHistoryItem {
     congestionReductionPct: number;
   };
   status: string;
+  userId?: string;
   user?: {
     name: string;
     email: string;
     agency?: string;
+    role?: string;
   };
 }
 
@@ -70,6 +73,7 @@ const defaultSimConfig: ISimulationConfig = {
 const SimulationContext = createContext<SimulationContextType | undefined>(undefined);
 
 export const SimulationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
   const [config, setConfig] = useState<ISimulationConfig>(defaultSimConfig);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [result, setResult] = useState<ISimulationResult | null>(null);
@@ -82,10 +86,17 @@ export const SimulationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const timerRef = useRef<any>(null);
 
-  // Initial benchmark run and history fetch on mount
+  // User-scoped storage key
+  const getUserStorageKey = () => `smartflow_simulations_${user?.id || user?.email || 'guest'}`;
+
+  // Fetch history and run benchmark whenever user changes
+  useEffect(() => {
+    fetchHistory();
+  }, [user?.id, user?.email]);
+
+  // Initial benchmark run on mount
   useEffect(() => {
     runSimulation();
-    fetchHistory();
   }, []);
 
   // Playback timer
@@ -121,8 +132,28 @@ export const SimulationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const fetchHistory = async () => {
     setIsLoadingHistory(true);
     try {
+      const storageKey = getUserStorageKey();
+      const localSaved = localStorage.getItem(storageKey);
+      let localItems: ISimulationHistoryItem[] = [];
+      if (localSaved) {
+        try {
+          localItems = JSON.parse(localSaved);
+        } catch {}
+      }
+
       const res = await api.getSimulationHistory();
-      setHistory(res.simulations || []);
+      const remoteItems: ISimulationHistoryItem[] = res.simulations || [];
+
+      // Merge and deduplicate by simulationId
+      const mergedMap = new Map<string, ISimulationHistoryItem>();
+      localItems.forEach((item) => mergedMap.set(item.simulationId, item));
+      remoteItems.forEach((item) => mergedMap.set(item.simulationId, item));
+
+      const mergedList = Array.from(mergedMap.values()).sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setHistory(mergedList);
     } catch (err) {
       console.warn('Failed to fetch simulation history:', err);
     } finally {
@@ -139,7 +170,43 @@ export const SimulationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setConfig(res.result.config);
       setCurrentStepIndex(0);
       setIsPlaying(true);
-      fetchHistory(); // Refresh history
+
+      // Save record locally scoped to the active user ID
+      const newHistoryItem: ISimulationHistoryItem = {
+        simulationId: res.result.simulationId,
+        name: finalConfig.name || `${finalConfig.peakHour.toUpperCase()} Peak Optimization`,
+        simulationDate: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        createdAt: new Date().toISOString(),
+        config: finalConfig,
+        beforeMetrics: res.result.beforeMetrics,
+        afterMetrics: res.result.afterMetrics,
+        improvements: {
+          speedImprovementPct: res.result.improvements.speedImprovementPct,
+          delayReductionPct: res.result.improvements.delayReductionPct,
+          congestionReductionPct: res.result.improvements.congestionReductionPct,
+        },
+        status: 'Completed',
+        userId: user?.id || 'usr-default',
+        user: {
+          name: user?.name || 'Authority Official',
+          email: user?.email || 'officer@gov.in',
+          agency: user?.agency || 'Municipal Traffic Command',
+          role: user?.role || 'Planning Authority',
+        },
+      };
+
+      const storageKey = getUserStorageKey();
+      const currentSaved = localStorage.getItem(storageKey);
+      let list: ISimulationHistoryItem[] = [];
+      if (currentSaved) {
+        try {
+          list = JSON.parse(currentSaved);
+        } catch {}
+      }
+      list = [newHistoryItem, ...list.filter((x) => x.simulationId !== newHistoryItem.simulationId)].slice(0, 20);
+      localStorage.setItem(storageKey, JSON.stringify(list));
+      setHistory(list);
+
       return res.result;
     } catch (err) {
       console.error('Simulation execution error:', err);
@@ -169,7 +236,10 @@ export const SimulationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const deleteHistoricalSimulation = async (simulationId: string): Promise<void> => {
     try {
       await api.deleteSimulation(simulationId);
-      setHistory((prev) => prev.filter((item) => item.simulationId !== simulationId));
+      const storageKey = getUserStorageKey();
+      const updated = history.filter((item) => item.simulationId !== simulationId);
+      setHistory(updated);
+      localStorage.setItem(storageKey, JSON.stringify(updated));
     } catch (err) {
       console.error('Failed to delete simulation:', err);
       throw err;
