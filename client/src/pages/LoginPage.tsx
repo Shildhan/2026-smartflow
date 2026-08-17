@@ -79,10 +79,9 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
     try {
       await login(email.trim(), password);
-      navigate('/', { replace: true });
+      window.location.href = '/';
     } catch (err: any) {
       setErrorMessage(err.message || 'Invalid email or password.');
-    } finally {
       setIsLoading(false);
     }
   };

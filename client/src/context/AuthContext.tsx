@@ -36,19 +36,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const verifySession = async () => {
       const storedToken = localStorage.getItem('smartflow_token');
-      if (storedToken) {
+      const storedUser = localStorage.getItem('smartflow_user');
+      
+      if (storedToken && storedUser) {
         try {
-          const res = await api.getCurrentUser(storedToken);
-          setUser(res.user);
+          setUser(JSON.parse(storedUser));
           setToken(storedToken);
-          localStorage.setItem('smartflow_user', JSON.stringify(res.user));
         } catch {
-          // Token expired or invalid
           setUser(null);
           setToken(null);
-          localStorage.removeItem('smartflow_user');
-          localStorage.removeItem('smartflow_token');
         }
+      } else if (storedToken) {
+        setToken(storedToken);
+        try {
+          const res = await api.getCurrentUser(storedToken);
+          if (res && res.user) {
+            setUser(res.user);
+            localStorage.setItem('smartflow_user', JSON.stringify(res.user));
+          }
+        } catch {}
       } else {
         setUser(null);
         setToken(null);
