@@ -30,7 +30,8 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage';
 
 // Protected Route Guard
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const { user, token, isLoadingAuth } = useAuth();
+  const hasAuth = !!localStorage.getItem('smartflow_token') || (!!user && !!token);
 
   if (isLoadingAuth) {
     return (
@@ -45,7 +46,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     );
   }
 
-  if (!isAuthenticated) {
+  if (!hasAuth) {
     return <Navigate to="/login" replace />;
   }
 

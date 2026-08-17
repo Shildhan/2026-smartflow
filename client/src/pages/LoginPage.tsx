@@ -46,8 +46,14 @@ export const LoginPage: React.FC = () => {
     return () => clearInterval(phaseTimer);
   }, []);
 
-  // Success message passed from password reset or register
   const successMessage = (location.state as any)?.message;
+
+  useEffect(() => {
+    const token = localStorage.getItem('smartflow_token');
+    if (token) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +79,7 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
     try {
       await login(email.trim(), password);
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (err: any) {
       setErrorMessage(err.message || 'Invalid email or password.');
     } finally {

@@ -9,6 +9,7 @@ import {
   IZoneData,
 } from '../types';
 import { api } from '../services/api';
+import { initialRoads, initialJunctions } from '../data/seedData';
 
 interface TrafficContextType {
   peakHour: PeakHourType;
@@ -45,17 +46,24 @@ const TrafficContext = createContext<TrafficContextType | undefined>(undefined);
 export const TrafficProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [peakHour, setPeakHour] = useState<PeakHourType>('morning');
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [roads, setRoads] = useState<IRoad[]>([]);
-  const [junctions, setJunctions] = useState<IJunction[]>([]);
+  const [roads, setRoads] = useState<IRoad[]>(initialRoads);
+  const [junctions, setJunctions] = useState<IJunction[]>(initialJunctions);
   const [alerts, setAlerts] = useState<IAlert[]>([]);
   const [routeAlternatives, setRouteAlternatives] = useState<IRouteAlternative[]>([]);
   const [recommendations, setRecommendations] = useState<IAIRecommendation[]>([]);
   const [zoneData, setZoneData] = useState<IZoneData[]>([]);
-  const [giniCoefficient, setGiniCoefficient] = useState<number>(0.64);
+  const [giniCoefficient, setGiniCoefficient] = useState<number>(0.44);
   const [imbalanceRating, setImbalanceRating] = useState<string>('Severe Jurisdictional Imbalance');
-  const [dashboardKPIs, setDashboardKPIs] = useState<any>(null);
+  const [dashboardKPIs, setDashboardKPIs] = useState<any>({
+    totalVehicles: 38450,
+    averageSpeedKmh: 24.8,
+    averageDelayMin: 18.4,
+    congestedRoadsCount: 6,
+    flowEfficiencyPct: 58.2,
+    co2EmissionTons: 14.6,
+  });
   const [timeSeries, setTimeSeries] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [selectedRoad, setSelectedRoad] = useState<IRoad | null>(null);
   const [selectedJunction, setSelectedJunction] = useState<IJunction | null>(null);
