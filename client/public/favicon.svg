@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="100" height="100" rx="24" fill="#0f172a" />
+  <circle cx="50" cy="50" r="40" stroke="url(#flowGrad)" stroke-width="3" opacity="0.4" />
+  <!-- Road Intersection -->
+  <path d="M 50 15 L 50 85" stroke="#334155" stroke-width="14" stroke-linecap="round" />
+  <path d="M 15 50 L 85 50" stroke="#334155" stroke-width="14" stroke-linecap="round" />
+  <!-- Dashed Road Markings -->
+  <path d="M 50 18 L 50 82" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6,6" />
+  <path d="M 18 50 L 82 50" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6,6" />
+  <!-- Smart Flow Curved Vector -->
+  <path d="M 24 76 C 45 76, 54 45, 76 24" stroke="url(#flowGrad)" stroke-width="6" stroke-linecap="round" filter="url(#glow)" />
+  <!-- Traffic Nodes -->
+  <circle cx="24" cy="76" r="6" fill="#10b981" filter="url(#glow)" />
+  <circle cx="50" cy="50" r="5" fill="#f59e0b" filter="url(#glow)" />
+  <circle cx="76" cy="24" r="6" fill="#3b82f6" filter="url(#glow)" />
+</svg>
