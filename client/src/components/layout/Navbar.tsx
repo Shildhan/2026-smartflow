@@ -274,24 +274,57 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                   transition={{ duration: 0.18 }}
-                  className="absolute right-0 mt-2 w-64 rounded-2xl glass-panel border border-slate-700/80 shadow-2xl p-3 z-50 space-y-2 bg-slate-950/95"
+                  className="absolute right-0 mt-2 w-72 rounded-2xl glass-panel border border-slate-700/80 shadow-2xl p-3.5 z-50 space-y-3 bg-slate-950/95 backdrop-blur-2xl"
                 >
-                  <div className="p-2.5 bg-slate-900/90 rounded-xl border border-slate-800">
-                    <p className="font-bold text-xs text-white">{user?.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{user?.email}</p>
-                    <p className="text-[10px] text-cyan-400 font-semibold mt-1">{user?.role}</p>
-                    <p className="text-[10px] text-slate-500 truncate">{user?.agency}</p>
+                  <div className="p-3 bg-slate-900/90 rounded-xl border border-slate-800 space-y-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center font-bold text-xs text-white shadow-md">
+                        {user?.name ? user.name[0] : 'A'}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-xs text-white truncate">{user?.name || 'Authority Official'}</p>
+                        <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mt-0.5">
+                          {user?.role || 'Planning Authority'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t border-slate-800/80 space-y-1 text-[11px]">
+                      <div className="flex items-center justify-between text-slate-400">
+                        <span>Email:</span>
+                        <span className="text-slate-200 font-mono text-[10px] truncate max-w-[140px]">{user?.email || 'officer@gov.in'}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-slate-400">
+                        <span>Agency:</span>
+                        <span className="text-slate-200 text-[10px] truncate max-w-[140px]">{user?.agency || 'Municipal Traffic Command'}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-slate-400">
+                        <span>Status:</span>
+                        <span className="text-emerald-400 text-[10px] font-semibold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> Logged In
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="pt-1 border-t border-slate-800">
+
+                  <div className="space-y-1">
+                    <Link
+                      to="/settings"
+                      onClick={() => setShowUserDropdown(false)}
+                      className="w-full px-2.5 py-2 text-xs text-slate-300 hover:text-white hover:bg-slate-900/80 rounded-xl font-medium transition-colors flex items-center justify-between"
+                    >
+                      <span>Authority Profile & Settings</span>
+                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                    </Link>
                     <button
                       onClick={() => {
                         logout();
                         setShowUserDropdown(false);
-                        navigate('/login');
+                        window.location.href = '/login';
                       }}
                       className="w-full text-left px-2.5 py-2 text-xs text-rose-400 hover:bg-rose-950/30 rounded-xl font-semibold transition-colors flex items-center justify-between"
                     >
                       <span>Sign Out</span>
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </motion.div>
