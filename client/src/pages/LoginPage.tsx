@@ -190,19 +190,64 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Register Link */}
-          <div className="pt-4 border-t border-slate-800/80 text-center">
-            <p className="text-xs text-slate-400">
-              Don't have an account?{' '}
-              <Link
-                to="/register"
-                className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
-              >
-                Register
-              </Link>
-            </p>
+            {/* 1-Click Quick Demo Accounts */}
+            <div className="pt-2 space-y-2">
+              <span className="text-[10px] uppercase font-bold text-slate-400 font-mono block text-center">
+                — Or 1-Click Quick Demo Login —
+              </span>
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('commissioner@nmcnagpur.gov.in');
+                    setPassword('SmartFlow@2026!');
+                    setErrorMessage('');
+                  }}
+                  className="p-2 rounded-xl bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-300 text-[10px] font-semibold flex flex-col items-center gap-0.5 transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <span>🏛️ Authority</span>
+                  <span className="text-[8px] text-slate-400">Commissioner</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('traffic.cp@nagpurpolice.gov.in');
+                    setPassword('SmartFlow@2026!');
+                    setErrorMessage('');
+                  }}
+                  className="p-2 rounded-xl bg-slate-900/90 border border-blue-500/30 hover:border-blue-500/60 text-blue-300 text-[10px] font-semibold flex flex-col items-center gap-0.5 transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <span>🚓 Traffic Police</span>
+                  <span className="text-[8px] text-slate-400">Administrator</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('mobility.analyst@nsscdcl.in');
+                    setPassword('SmartFlow@2026!');
+                    setErrorMessage('');
+                  }}
+                  className="p-2 rounded-xl bg-slate-900/90 border border-purple-500/30 hover:border-purple-500/60 text-purple-300 text-[10px] font-semibold flex flex-col items-center gap-0.5 transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <span>📊 Smart City</span>
+                  <span className="text-[8px] text-slate-400">Analyst</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Register Link */}
+            <div className="pt-3 border-t border-slate-800/80 text-center">
+              <p className="text-xs text-slate-400">
+                Don't have an account?{' '}
+                <Link
+                  to="/register"
+                  className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  Register
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
 
         {/* Footer Note */}
         <p className="text-[11px] text-center text-slate-500">
