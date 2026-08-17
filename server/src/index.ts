@@ -42,15 +42,22 @@ app.get('/', (_req, res) => {
 });
 
 // Start Server
-const startServer = async () => {
+export const startServer = async () => {
   await connectDB();
-  app.listen(PORT, () => {
-    console.log(`====================================================`);
-    console.log(`🚀 SmartFlow Traffic Backend running on port ${PORT}`);
-    console.log(`📡 Base API URL: http://localhost:${PORT}/api`);
-    console.log(`🚦 Real-time Simulation Engine & AI Recommender Ready`);
-    console.log(`====================================================`);
-  });
+  if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+      console.log(`====================================================`);
+      console.log(`🚀 SmartFlow Traffic Backend running on port ${PORT}`);
+      console.log(`📡 Base API URL: http://localhost:${PORT}/api`);
+      console.log(`🚦 Real-time Simulation Engine & AI Recommender Ready`);
+      console.log(`====================================================`);
+    });
+  }
 };
 
-startServer();
+if (process.env.VERCEL !== '1') {
+  startServer();
+}
+
+export default app;
+
